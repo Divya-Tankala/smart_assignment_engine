@@ -1,0 +1,56 @@
+/* Reset some default styles */
+body, h1, h2, p, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Basic styling */
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #e1ad01;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+main {
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 40px;
+}
+
+.user-types a {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+footer {
+    background-color: #e1ad01;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}

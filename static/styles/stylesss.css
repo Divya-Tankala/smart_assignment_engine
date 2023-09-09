@@ -1,0 +1,141 @@
+/* Reset default styles */
+body, h1, h2, p, ul, li, form, input, button, textarea {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+/* Basic styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+}
+/* Basic styling for select element */
+select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    background-color: white;
+    appearance: none; /* Remove default arrow in some browsers */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Styling for select options */
+select option {
+    padding: 10px;
+}
+/* Basic styling for button element */
+button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Hover effect */
+button:hover {
+    background-color: #555;
+}
+
+/* Disabled state */
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+header {
+    background-color: #e1ad01;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+main {
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 40px;
+}
+
+/* Form styling */
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+form input[type="text"],
+form input[type="email"],
+form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    padding: 10px 20px;
+    background-color: #e1ad01;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Button styling */
+button,
+a.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #e1ad01;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Footer styling */
+footer {
+    background-color: #e1ad01;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+    header nav ul {
+        text-align: center;
+    }
+
+    header nav ul li {
+        display: block;
+        margin: 10px 0;
+    }
+}

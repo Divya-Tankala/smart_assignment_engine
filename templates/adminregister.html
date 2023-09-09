@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"  />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link href="{{ url_for('static', filename='styles/home.css') }}" rel="stylesheet">
+    <title>Admin Profile</title>
+    
+  </head>
+  <body>
+    <div class="wrapper">
+      <!--Top menu -->
+      <div class="sidebar">
+        <!--profile image & text-->
+        <div class="profile">
+          <img
+            src="https://1.bp.blogspot.com/-vhmWFWO2r8U/YLjr2A57toI/AAAAAAAACO4/0GBonlEZPmAiQW4uvkCTm5LvlJVd_-l_wCNcBGAsYHQ/s16000/team-1-2.jpg"
+            alt="profile_picture"
+          />
+          <h3>{{ name }} </h3>
+          <p>{{role}}</p>
+        </div>
+        <!--menu item-->
+        <ul>
+            
+            <li>
+                <a href="/adminprofile" class="active">
+                    <span class="icon"><i class="fas fa-desktop"></i></span>
+                    <span class="item">Profile</span>
+                </a>
+            </li>
+            <li>
+                <a href="/register">
+                    <span class="icon"><i class="fas fa-user-friends"></i></span>
+                    <span class="item">Register</span>
+                </a>
+            </li>
+            
+
+            <li>
+              <a href="/">
+                  <span class="icon"><i class="fas fa-tachometer-alt"></i></span>
+                  <span class="item">Logout</span>
+              </a>
+          </li>
+            
+        </ul>
+      </div>
+      <div class="main_content">
+        <h2 style="margin-top: 50px;" >Please enter your details to register yourself</h2>
+        <!-- form begins -->
+        <form id="form" action="{{ url_for('register')}}" method="post">
+            <div class="form-control">
+                <label for="name">Name</label><br>
+                <input type="text" name="sname" id="sname" placeholder="Enter your name"><br>
+            </div>
+
+            <div class="form-control">
+                <label for="email">Email</label><br>
+                <input type="text" name="semail" id="semail" placeholder="Enter your Email id"><br>
+            </div>
+
+            <div class="form-control">
+                <label for="username">UserName</label><br>
+                <input type="text" name="susername" id="susername" placeholder="Enter your username"><br>
+            </div>
+
+            
+            <div class="form-control">
+                <label for="role">Role</label><br>
+                <select id="role" name="role">
+                    <option value="0">Faculty</option>
+                    <option value="1">Student</option>
+                    <option value="2">New Admin</option>
+                </select>
+            </div>
+
+           <div class="form-control">
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+            <div>
+                <p> Already Registered? <a href=" {{url_for('login')}}">Login Here</a></p>
+                
+            </div>
+</div>
+</div>
+  </div>
+</div>
+
+        </form>
+        <!-- form end -->
+        <script>
+  window.watsonAssistantChatOptions = {
+    integrationID: "451fb165-e237-4c91-b0f4-f05f828ea75d", // The ID of this integration.
+    region: "us-south", // The region your integration is hosted in.
+    serviceInstanceID: "1507e665-7001-40ba-b682-f9871b04180f", // The ID of your service instance.
+    onLoad: function(instance) { instance.render(); }
+  };
+  setTimeout(function(){
+    const t=document.createElement('script');
+    t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+    document.head.appendChild(t);
+  });
+</script>
+    </body>
+</html>

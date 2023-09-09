@@ -1,0 +1,29 @@
+body {
+    display: block;
+    background-color: rgba(6, 6, 59, 0.989);
+    font-family: Verdana;
+    color: aliceblue;
+    text-align: center;
+    
+     
+}
+
+
+form  {
+    display: inline-block;
+    background-color: #b1f5f5;
+    color: rgba(6, 6, 59) ;
+    margin:30px ;
+    padding: 40px;
+    border: solid;
+    border-color: white;
+    border-width: 5px;
+    border-radius: 10px;
+    box-shadow: 2px 5px 10px rgb(245, 245, 245, 0.6);
+    text-align: left;
+    width: 280px;
+}
+
+.form-control {
+    margin-bottom: 10px;
+}
