@@ -1,0 +1,5 @@
+pip install flask
+pip install ibm_db
+pip install ibm-cos-sdk
+pip install boto3
+ 

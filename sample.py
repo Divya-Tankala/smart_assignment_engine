@@ -13,7 +13,7 @@ app=Flask(__name__)
 @app.route('/')
 
 def welcome():
-    return render_template("facultystulist.html")
+    return render_template("adminprofile.html")
 
 @app.route('/facultymarks')
 

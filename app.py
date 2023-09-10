@@ -5,7 +5,8 @@ Created on Fri Sep  8 14:49:41 2023
 @author: admin
 """
 
-from flask import Flask, render_template, request,session
+from flask import Flask, render_template, request,session, send_file
+
 from datetime import datetime
 import ibm_db
 import ibm_boto3
@@ -17,10 +18,8 @@ import string
 import requests
 
 app=Flask(__name__)
+app.secret_key="radis"
 
-if __name__=="__main__":
-    app.run(debug=True,host="0.0.0.0")
-    
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -63,7 +62,7 @@ def loginentered():
         account=ibm_db.fetch_assoc(stmt)
         print(account)
         if account:
-            session["Loggedin"]= True
+            #session["Loggedin"]= True
             session["id"]=account['EMAIL']
             Userid= account['EMAIL']
             session['email']=account['EMAIL']
@@ -77,19 +76,18 @@ def loginentered():
             ibm_db.execute(stmt)
             r=ibm_db.fetch_assoc(stmt)
             print(r)
-            if r["ROLE"]==1:
+            if r["ROLE"]==2:
                 print("STUDENT")
                 return render_template("studentprofile.html",msg=msg,user=email,name=Name, role="STUDENT", username=Username, email= email)
-            elif r["ROLE"]==2:
+            elif r["ROLE"]==0:
                 print("FACULTY")
                 return render_template("facultyprofile.html",msg=msg,user=email,name=Name, role="FACULTY", username=Username, email= email)
             else:
                 print("ADMIN")
                 return render_template("adminprofile.html",msg=msg,user=email,name=Name, role="ADMIN", username=Username, email= email)
         else:
-            msg="Incorrect email or Password"
-            
-        return render_template("login.html", msg=msg)
+            msg="Incorrect email or Password"            
+            return render_template("login.html", msg=msg)
     else:
         return render_template("login.html")
             
@@ -98,6 +96,7 @@ def loginentered():
 def sassignment():
     u= Username.strip()
     subtime=[]
+    str1=""
     ma = []
     sql= "SELECT SUBMITTIME, MARKS FROM SUBMIT WHERE STUDENTNAME=?"
     stmt=ibm_db.prepare(conn,sql)
@@ -123,11 +122,11 @@ def sassignment():
                 basepath=os.path.dirname(__file__)
                 filepath=os.path.join(basepath,'uploads',u+x+".pdf")
                 f.save(filepath)
-                COS_ENDPOINT ="https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints"
-                COS_API_KEY_ID="6DVtRnO6_1_j3ynAxB_DIb-w68ZtDoh1V8baosVmUMwn"
-                COS_INSTANCE_CRN="crn:v1:bluemix:public:cloud-object-storage:global:a/87b0f5ee26d041cebdf5ad3f0e2cf311:4bd90f6c-ec64-492f-b9ee-94854c7e1c13::"
-                cos=ibm_boto3.client("s3",ibm_api_key_id=COS_API_KEY_ID,ibm_service_instance_id=COS_INSTANCE_CRN,config=Config(signature_version="oauth"),endpoint_url=COS_ENDPOINT)
-                cos.upload_file(Filename= filepath,Bucket='caddivya',Key=u+x+".pdf")
+                #COS_ENDPOINT ="https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints"
+                #COS_API_KEY_ID="ybIQTpmdUPDMELILYuKntpPaFM5WW1uHrNnmnoyqG_rm"
+                #COS_INSTANCE_CRN="crn:v1:bluemix:public:cloud-object-storage:global:a/87b0f5ee26d041cebdf5ad3f0e2cf311:4bd90f6c-ec64-492f-b9ee-94854c7e1c13::"
+                #cos=ibm_boto3.client("s3",ibm_api_key_id=COS_API_KEY_ID,ibm_service_instance_id=COS_INSTANCE_CRN,config=Config(signature_version="oauth"),endpoint_url=COS_ENDPOINT)
+                #cos.upload_file(Filename= filepath,Bucket='studentassignment1',Key=u+x+".pdf")
                 msg="Uploading Succesful"
                 ts=datetime.now()
                 t=ts.strftime("%Y-%m-%d %H:%M:%S")
@@ -139,7 +138,7 @@ def sassignment():
                 acc=ibm_db.fetch_assoc(stmt)
                 print(acc)
                 if acc==False:
-                    sql= "INSERT INTO SUBMIT (STUDENTNAME, ASSIGNMENTNUM, SUBMITTIME) valuse (?,?,?)"
+                    sql= "INSERT INTO SUBMIT (STUDENTNAME, ASSIGNMENTNUM, SUBMITTIME) values (?,?,?)"
                     stmt=ibm_db.prepare(conn,sql)
                     ibm_db.bind_param(stmt,1,u)
                     ibm_db.bind_param(stmt,2,x)
@@ -148,14 +147,25 @@ def sassignment():
                 else:
                     sql="UPDATE SUBMIT SET SUBMITTIME = ? WHERE STUDENTNAME= ? and ASSIGNMENTNUM=?"
                     stmt=ibm_db.prepare(conn,sql)
-                    ibm_db.bind_param(stmt,1,u)
-                    ibm_db.bind_param(stmt,2,x)
-                    ibm_db.bind_param(stmt,3,t)
+                    ibm_db.bind_param(stmt,1,t)
+                    ibm_db.bind_param(stmt,2,u)
+                    ibm_db.bind_param(stmt,3,x)
                     ibm_db.execute(stmt)
                 return render_template('studentsubmit.html', msg=msg, datetime=subtime, marks=ma)
                 continue
-        return render_template("studentsubmit.html",datetime=subtime, Marks=ma)
                     
+    return render_template("studentsubmit.html",datetime=subtime, marks=ma)                
+@app.route('/download/<filename>')
+def download_file(filename):
+    # Set the path to the folder where your files are located.
+    folder_path = '/path/to/your/folder'
+
+    # Generate the full path to the requested file.
+    file_path = f"{folder_path}/{filename}"
+
+    # Send the file to the user's browser for download.
+    return send_file(file_path, as_attachment=True)
+
 @app.route("/facultymarks")
 def facultymarks():
     data=[]
@@ -174,7 +184,7 @@ def facultymarks():
     data1 = list(data1)
     print(data1)
     
-    return render_template("facultystulist.htnl", names=data1, le=len(data1))
+    return render_template("facultystulist.html", names=data1, le=len(data1))
 
 @app.route("/marksassign/<string:stdname>", methods=['POST', 'GET'])
 def marksassign(stdname):
@@ -183,10 +193,10 @@ def marksassign(stdname):
     global file
     da=[]
     COS_ENDPOINT ="https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints"
-    COS_API_KEY_ID="Tn7AjMb0oEY73sNH96pFhQDCwEe-KP8fm94lseeUX6mq"
+    COS_API_KEY_ID="ybIQTpmdUPDMELILYuKntpPaFM5WW1uHrNnmnoyqG_rm"
     COS_INSTANCE_CRN="crn:v1:bluemix:public:cloud-object-storage:global:a/87b0f5ee26d041cebdf5ad3f0e2cf311:4bd90f6c-ec64-492f-b9ee-94854c7e1c13::"
     cos=ibm_boto3.client("s3",ibm_api_key_id=COS_API_KEY_ID,ibm_service_instance_id=COS_INSTANCE_CRN,config=Config(signature_version="oauth"),endpoint_url=COS_ENDPOINT)
-    output=cos.list_objects(Bucket="studentassignmentsb")
+    output=cos.list_objects(Bucket="studentassignment1")
     output
     l=[]
     for i in range(0,len(output['Contents'])):
@@ -260,7 +270,8 @@ def signup():
         email=request.form['semail']
         username=request.form['susername']
         role = int(request.form['role'])
-        password=''.join(random.choice(string.ascii_letters) for i in range(0,8))
+        password=request.form['spassword']
+        #password=''.join(random.choice(string.ascii_letters) for i in range(0,8))
         link="https://gnits.ac.in"
         print(password)
         sql="SELECT * FROM REGISTER WHERE EMAIL= ? "
@@ -282,31 +293,33 @@ def signup():
             ibm_db.bind_param(prep_stmt,3,username)
             ibm_db.bind_param(prep_stmt,4,password)
             ibm_db.bind_param(prep_stmt,5,role)
-            ibm_db.execute(prep_stmt)
-            
+            ibm_db.execute(prep_stmt)            
             url = "https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send"
             payload = {
-                "personalizations": [
-                    {
-			"to": [{ "email": email }],
-			"subject": "Student Account Details"
-		}],
-	"from": { "email": "divyatankala@gnits.ac.in" },
-	"content": [
-		{
-			"type": "text/plain",
-			"value": """Dear {},\n Welcome to University,
-            Here there the details to Login into your student portal link:{}\n
-            Your username:{}\n Password: {}\n Thank You""".format(name,link,email,password)
-		}]
-    }
+                "personalizations": [{
+                        "to": [{ "email": email }],
+                        "subject": "Student Account Details"
+                        }],
+                "from": { "email": "divyatankala@gnits.ac.in" },
+                "content": [{
+                    "type": "text/plain",
+                    "value": """Dear {},\n Welcome to University,
+                    Here there the details to Login into your student portal link:{}\n
+                    Your username:{}\n Password: {}\n Thank You""".format(name,link,email,password)
+                    }]
+                }
             headers = {
-	"content-type": "application/json",
-	"X-RapidAPI-Key": "052ce1c2e4mshd85266c118afd04p13dab2jsn0df3920c549b",
-	"X-RapidAPI-Host": "rapidprod-sendgrid-v1.p.rapidapi.com"
-}
-
+                "content-type": "application/json",
+                "X-RapidAPI-Key": "052ce1c2e4mshd85266c118afd04p13dab2jsn0df3920c549b",
+                "X-RapidAPI-Host": "rapidprod-sendgrid-v1.p.rapidapi.com"
+                }
             response = requests.request("POST",url, json=payload, headers=headers)
             print(response.text)
             msg="Registration Successful"
     return render_template('adminregister.html', msg=msg)
+
+if __name__=="__main__":
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.run(debug=True)
+
+    
