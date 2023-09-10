@@ -1,0 +1,13 @@
+FROM PYTHON: 3.9
+
+RUN mkdir -p /ibm_cloud_app
+
+COPY ./ibm_cloud_app
+
+
+RUN python3 -m pip install -r/ibm_cloud_app/requirements.txt
+
+EXPOSE 5000
+
+CMD ['python' '/ibm_cloud_app/app.python'].
+
